@@ -1,57 +1,40 @@
-import time
 from termcolor import colored
-print(colored("Welcome to ToDo App, by Sanskar!", "blue", attrs=["bold"]))
-todo_tasks = input("Tasks to add in todo list: ")
+print(colored("Welcome to ToDo(s) Manager!", "cyan", attrs=["bold"]))
+print(colored("1. View | 2. Add ToDo | 3. Remove ToDo | 4. Quit", "yellow", attrs=["bold"]))
 
-#opening file to append tasks 	
-f = open("todo-tasks.txt", "a")
-f.write(f"{todo_tasks} — Added on {time.asctime()}\n")
-
-print(colored(f"'{todo_tasks}' was added in todo list.", "green", attrs=["bold"]))
-f.close()
-
-print('\n---------------#-------------#-----------')
-
-print("Press 1 to see your incomplete todo(s) or 0 to quit")
-user_choice = int(input("Enter Your Choice: "))
-
-#opening file to read
-f2 = open("todo-tasks.txt", "r")
-contents = f2.readlines()
-
-if user_choice == 1:
-	print(colored("\nYour incomplete todo(s) are: ", "magenta", attrs=["bold"]))	
-	i =0
-	for content in contents:
-		print(colored(f"{i}. {content}", "magenta", attrs=["bold"]))
-		i += 1	
-			
-elif user_choice == 0:
-	print("Thank You For Using Our Program!")
-	exit()
+def view():
+		with open("todo-tasks.txt", "r") as f:
+			all_todo = f.readlines()
+			if len(all_todo) == 0:
+				print(colored("No incomplete todos! Great!", "green", attrs=["bold"]))
+			else:
+				print(colored(colored("Following are incomplete todos:", "magenta", attrs=["bold"])))
+				for n, todo in enumerate(all_todo):
+					print(colored(f"{n}. {todo}", "white", attrs=["bold"]))
 		
-else:
-	print("Invalid Choice!")
-f2.close()
+def add_todo(todo):
+	with open("todo-tasks.txt", "a") as f:
+			f.write(f"{todo}\n")
+			print(colored("Success!", "green", attrs=["bold"]))
 
-edit_choice = int(input("To edit todo list press 1 or 0 to quit: "))
+def rem_todo(todo_no):
+		with open("todo-tasks.txt", "r") as f:
+			all_todo = f.readlines()
+			del all_todo[todo_no]
+			
+		with open("todo-tasks.txt", "w") as f:
+			for todo in all_todo:
+				f.write(todo)
+			print(colored("Success!", "green", attrs=["bold"]))
 
-if edit_choice == 1:
-    remove_choice = int(input("Select todo to remove from list: "))
-    del contents[remove_choice]
-
-    # Now open the file in write mode #fix
-    f3 = open("todo-tasks.txt", "w")
-    for content2 in contents:
-        f3.write(content2)
-    f3.close()
-    print(colored("Success!", "green", attrs=["bold"]))
-
-elif edit_choice == 0:
-    print("Thank You For Using Our Program!")
-    exit()
-
-else:
-    print("Invalid Option!")
-	
-f3.close()
+while True:
+	user_input = int(input(colored("\nEnter Choice: ", attrs=["bold"])))
+	if user_input == 1:
+		view()
+	elif user_input == 2:
+		add_todo(input("Enter ToDo Task: "))
+	elif user_input == 3:
+		rem_todo(int(input("Enter ToDo Number: ")))
+	else:
+		print(colored("Thank You!", "green", attrs=["bold"]))
+		exit()
